@@ -1,0 +1,50 @@
+plugins {
+    // Apply the scala Plugin to add support for Scala.
+    id 'scala'
+
+    // Apply the application plugin to add support for building a CLI application in Java.
+    id 'application'
+
+    id 'com.github.johnrengelman.shadow' version '6.1.0'
+}
+
+group 'dev.koffein'
+// version '1.0-SNAPSHOT'
+
+sourceCompatibility = '11'
+targetCompatibility = '11'
+
+repositories {
+    mavenCentral()
+
+    maven { url 'https://jitpack.io' }
+}
+
+dependencies {
+    implementation 'org.scala-lang:scala-compiler:2.13.6'
+    implementation 'org.scala-lang:scala-library:2.13.6'
+
+    implementation 'info.picocli:picocli:4.6.1'
+    implementation 'org.eclipse.jgit:org.eclipse.jgit:5.10.0.202012080955-r'
+
+    implementation 'com.github.sh5i:git-stein:0.5.0'
+}
+
+task repl(type:JavaExec) {
+    main = "scala.tools.nsc.MainGenericRunner"
+    classpath = sourceSets.main.runtimeClasspath
+    standardInput System.in
+    args '-usejavacp'
+}
+
+//tasks.withType(ScalaCompile) {
+//    scalaCompileOptions.additionalParameters = ["-Xsource:3"]
+//}
+
+mainClassName = 'dev.koffein.repoFilter.Main'
+
+jar {
+    manifest {
+        attributes "Main-Class": mainClassName
+    }
+}
