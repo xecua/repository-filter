@@ -31,7 +31,7 @@ dependencies {
 }
 
 task repl(type:JavaExec) {
-    main = "scala.tools.nsc.MainGenericRunner"
+    mainClassName = "scala.tools.nsc.MainGenericRunner"
     classpath = sourceSets.main.runtimeClasspath
     standardInput System.in
     args '-usejavacp'
