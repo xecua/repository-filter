@@ -4,6 +4,7 @@ import jp.ac.titech.c.se.stein.core.{Context, RefEntry, RepositoryRewriter}
 import jp.ac.titech.c.se.stein.core.Context.Key
 import org.eclipse.jgit.lib.{Constants, ObjectId, Ref}
 import org.eclipse.jgit.revwalk.{RevCommit, RevTag}
+import picocli.CommandLine
 
 import scala.annotation.tailrec
 import scala.collection.mutable
@@ -11,6 +12,12 @@ import scala.jdk.CollectionConverters._
 import scala.util.control.Exception._
 
 class BaseFilter extends RepositoryRewriter {
+  @CommandLine.Option(
+    names = Array("--all-commits"),
+    description = Array("Whether to include all commits"),
+  )
+  protected var useAllCommits: Boolean = false
+
   override def rewriteParents(parents: Array[ObjectId],
                               c: Context): Array[ObjectId] =
     // parent消したらコミットID変わるからちゃんと追わないといけないね
@@ -49,7 +56,8 @@ class BaseFilter extends RepositoryRewriter {
   }
 
   // remotesもやっちゃえ
-  override def confirmStartRef(ref: Ref, c: Context): Boolean = true
+  override def confirmStartRef(ref: Ref, c: Context): Boolean =
+    if (useAllCommits) true else super.confirmStartRef(ref, c)
 
   override protected def updateRefs(c: Context): Unit = {
     val symbolicRefs = new mutable.ArrayBuffer[Ref]()
